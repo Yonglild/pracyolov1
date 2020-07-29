@@ -4,7 +4,8 @@ from VGG import VGG
 class YOLOV1(nn.Module):
     def __init__(self):
         super(YOLOV1, self).__init__()
-        self.backbone = VGG.features
+        vgg = VGG()
+        self.backbone = vgg.features
         self.avgpool = nn.AdaptiveAvgPool2d((7, 7))
         self.fc = nn.Linear(512 * 7 * 7, 7*7*5)
 

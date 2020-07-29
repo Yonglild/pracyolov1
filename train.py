@@ -4,8 +4,10 @@ from loss import loss_func
 import torch.optim as optim
 from torch.optim import lr_scheduler
 from data_process import input_process, target_process
+from data import PennFudanDataset
+import torch.utils.data
 
-device = torch.device("cuda:0" if torch.cuda.is_availabel() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 model = YOLOV1().to(device)
 
@@ -24,8 +26,11 @@ dataset = None
 dataset_test = None
 collate_fn = None
 
+datapath = '/home/wyl/YOLO&SSD/PennFudanPed'
+PennFudan = PennFudanDataset(datapath)
+
 train_loader = torch.utils.data.DataLoader(
-        dataset, batch_size=1, shuffle=False, num_workers=1,
+        PennFudan, batch_size=2, shuffle=False, num_workers=1,
         collate_fn=collate_fn)
 
 val_loader = torch.utils.data.DataLoader(
@@ -58,3 +63,4 @@ def train():
             torch.save(YOLOV1.state_dict(), '{}_{:.2f}.pth'.format(epoch, loss.item()))
         scheduler.step()
 
+train()

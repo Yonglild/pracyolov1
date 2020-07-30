@@ -6,7 +6,7 @@ def loss_func(outputs, labels):
     loss = 0
     rho1, rho2 = 0.3, 0.3
     batch, w, h, z = outputs.shape[:]
-    loss_tmp, loss_conf_tmp = np.zeros((w, h)), np.zeros((w, h))
+    loss_tmp, loss_conf_tmp = torch.zeros((w, h)), torch.zeros((w, h))
     for b in range(batch):
         for i in range(w):
             for j in range(h):

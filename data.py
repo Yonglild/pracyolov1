@@ -1,6 +1,8 @@
 from PIL import Image
 import os
 import re
+import numpy as np
+
 class PennFudanDataset():
     def __init__(self, root):
         self.imgdir = os.path.join(root, 'PNGImages')
@@ -10,14 +12,15 @@ class PennFudanDataset():
     def __getitem__(self, item):
         imgpath = os.path.join(self.imgdir, self.imgs[item])
         imgname = os.path.splitext(os.path.basename(imgpath))[0]
-        img = Image.open(imgpath)      #
+        img = Image.open(imgpath)
         annoname = self.annodir + '/' + imgname + '.txt'
         boxs, whs = self.getbox(annoname)   # []
         print(annoname, boxs)
         target = {}
-        target['img'] = img
+        target['img'] = np.array(img)
         target['boxs'] = boxs
-        target['whs'] = whs
+        target['boxwhs'] = whs
+        target['imgwh'] = img.size
         return target
 
     def __len__(self):

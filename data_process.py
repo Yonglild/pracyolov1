@@ -3,14 +3,28 @@ import torch
 import cv2
 
 def input_process(batch):
-    batchsize = len(batch)
-    imglist = []
-    for i in range(batchsize):
-        img = batch[i]['img']
-        img = cv2.resize(img, (448, 448))
-        img = torch.Tensor(img).permute((2, 0, 1))
-        imglist.append(img)
-    return torch.stack(imglist, dim=0)
+    # batchsize = len(batch)
+    # imglist = []
+    # for i in range(batchsize):
+    #     img = batch[i]['img']
+    #     img = cv2.resize(img, (448, 448))
+    #     img = torch.Tensor(img).permute((2, 0, 1))
+    #     imglist.append(img)
+    # return torch.stack(imglist, dim=0)
+
+
+    #import pdb
+    #pdb.set_trace()
+    batch_size=len(batch)
+    input_batch= torch.zeros(batch_size,3,448,448)
+    for i in range(batch_size):
+        inputs_tmp = torch.Tensor(batch[0]['img'])
+        inputs_tmp1=cv2.resize(inputs_tmp.numpy(),(448,448))
+        inputs_tmp2=torch.tensor(inputs_tmp1).permute([2,0,1])
+        input_batch[i:i+1,:,:,:]= torch.unsqueeze(inputs_tmp2,0)
+    return input_batch
+
+
 
 def target_process(batch):
     batchsize = len(batch)

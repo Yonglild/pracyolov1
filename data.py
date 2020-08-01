@@ -3,11 +3,13 @@ import os
 import re
 import numpy as np
 
+
 class PennFudanDataset():
     def __init__(self, root):
         self.imgdir = os.path.join(root, 'PNGImages')
         self.annodir = os.path.join(root, 'Annotation')
         self.imgs = os.listdir(self.imgdir)
+
 
     def __getitem__(self, item):
         imgpath = os.path.join(self.imgdir, self.imgs[item])
@@ -17,14 +19,16 @@ class PennFudanDataset():
         boxs, whs = self.getbox(annoname)   # []
         print(annoname, boxs)
         target = {}
-        target['img'] = np.array(img)
+        target['img'] = np.array(img)/255
         target['boxs'] = boxs
         target['boxwhs'] = whs
         target['imgwh'] = img.size
         return target
 
+
     def __len__(self):
         return len(self.imgs)
+
 
     def getbox(self, anno):
         boxs, whs = [], []

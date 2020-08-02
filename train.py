@@ -38,6 +38,7 @@ def collate_fn(batch):
 
 datapath = '/home/bubble/wyl/data/PennFudanPed'
 dataset = PennFudanDataset(datapath)
+dataset_test = PennFudanDataset(datapath)
 # dataset = PennFudanDataset(datapath, get_transform(train=False))
 # dataset = torch.utils.data.Subset(dataset, [0])
 
@@ -45,8 +46,8 @@ train_loader = torch.utils.data.DataLoader(
         dataset, batch_size=8, shuffle=False, num_workers=1,
             collate_fn=collate_fn)
 
-val_loader = torch.utils.data.DataLoader(
-        dataset_test, batch_size=2, shuffle=False, num_workers=4)
+test_loader = torch.utils.data.DataLoader(
+        dataset_test, batch_size=1,  shuffle=False, num_workers=1)
 
 # 优化backbone 还是 检测器
 optimizer = optim.SGD(model.detector.parameters(), lr=lr, momentum=momentum, weight_decay=w_decay)
@@ -84,10 +85,11 @@ def test():
     imgpath = '/home/bubble/wyl/data/PennFudanPed/PNGImages/FudanPed00001.png'
     model.load_state_dict(torch.load(Path))
     model.eval()
-    img = cv2.imread(imgpath)
-    input = torch.tensor(img).permute((2, 0, 1)).unsqueeze(dim=0)
-    ouput = model(input.to(device))
-    show_results(img, ouput)
+    for iter, batch in enumerate(test_loader):
+        img = batch['img']
+        input = torch.tensor(img).permute((0, 3, 1, 2)).type(torch.FloatTensor)
+        ouput = model(input.to(device))
+        show_results(img, ouput)
 
 if __name__ == '__main__':
     # train()

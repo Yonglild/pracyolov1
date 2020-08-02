@@ -19,7 +19,7 @@ class PennFudanDataset():
         boxs, whs = self.getbox(annoname)   # []
         print(annoname, boxs)
         target = {}
-        target['img'] = np.array(img)/255
+        target['img'] = np.array(img) / 255
         target['boxs'] = boxs
         target['boxwhs'] = whs
         target['imgwh'] = img.size

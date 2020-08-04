@@ -6,8 +6,8 @@ import numpy as np
 
 class PennFudanDataset():
     def __init__(self, root):
-        self.imgdir = os.path.join(root, 'PNGImages')
-        self.annodir = os.path.join(root, 'Annotation')
+        self.imgdir = os.path.join(root, 'p')
+        self.annodir = os.path.join(root, 'a')
         self.imgs = os.listdir(self.imgdir)
 
 

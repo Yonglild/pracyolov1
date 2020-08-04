@@ -1,5 +1,7 @@
+import torch
 import torch.nn as nn
 from VGG import VGG
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # class YOLOV1(nn.Module):
 #     def __init__(self):
@@ -96,7 +98,7 @@ class VGG(nn.Module):
 class YOLOV1(nn.Module):
     def __init__(self):
         super(YOLOV1, self).__init__()
-        vgg = VGG().to("cuda:0")
+        vgg = VGG().to(device)
         self.extractor = vgg.extractor
         self.avgpool = nn.AdaptiveAvgPool2d((7, 7))
         # 决策层：检测层

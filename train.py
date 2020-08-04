@@ -36,7 +36,7 @@ def collate_fn(batch):
 # def collate_fn(batch):
 #     return tuple(zip(*batch))
 
-datapath = '/home/bubble/wyl/data/PennFudanPed'
+datapath = '/home/wyl/YOLO&SSD/PennFudanPed'
 dataset = PennFudanDataset(datapath)
 dataset_test = PennFudanDataset(datapath)
 # dataset = PennFudanDataset(datapath, get_transform(train=False))
@@ -47,7 +47,8 @@ train_loader = torch.utils.data.DataLoader(
             collate_fn=collate_fn)
 
 test_loader = torch.utils.data.DataLoader(
-        dataset_test, batch_size=1,  shuffle=False, num_workers=1)
+        dataset_test, batch_size=1,  shuffle=False, num_workers=1,
+            collate_fn=collate_fn)
 
 # 优化backbone 还是 检测器
 optimizer = optim.SGD(model.detector.parameters(), lr=lr, momentum=momentum, weight_decay=w_decay)
@@ -75,21 +76,24 @@ def train():
             if iter % 10 == 0:
                 print("epoch{}, iter{}, loss: {}, lr: {}".format(epoch, iter, loss.data.item(),
                                                                  optimizer.state_dict()['param_groups'][0]['lr']))
-        if epoch % 30 == 0:
+        if epoch % 10 == 0:
             torch.save(model.state_dict(), '{}_{:.2f}.pth'.format(epoch, loss.item()))
         scheduler.step()
 
-
+# 可能是训练时，损失函数的定义出现问题；
 def test():
-    Path = '/home/bubble/wyl/Yolo_pratical/pracyolov1/12_0.64.pth'
-    imgpath = '/home/bubble/wyl/data/PennFudanPed/PNGImages/FudanPed00001.png'
+    Path = '/home/wyl/YOLO&SSD/Yolo_pratical/pracyolo1/60_0.03.pth'
+    imgpath = '/home/wyl/YOLO&SSD/PennFudanPed/p/FudanPed00001.png'
     model.load_state_dict(torch.load(Path))
     model.eval()
     for iter, batch in enumerate(test_loader):
         img = batch['img']
+        # img = cv2.imread(imgpath)
+        # labels = target_process(batch).to(device)
+
         input = torch.tensor(img).permute((0, 3, 1, 2)).type(torch.FloatTensor)
-        ouput = model(input.to(device))
-        show_results(img, ouput)
+        output = model(input.to(device))
+        show_results(img, output)
 
 if __name__ == '__main__':
     # train()
